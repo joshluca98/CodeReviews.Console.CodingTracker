@@ -47,6 +47,7 @@ namespace CodingTracker.joshluca98
 
         public static void Insert()
         {
+            Console.WriteLine("Insert Record");
             string date = Helper.GetDateInput();
             TimeSpan startTime = Helper.GetTime("Time started (HH:mm): ");
             TimeSpan endTime = Helper.GetTime("Time ended (HH:mm): ");
@@ -66,6 +67,7 @@ namespace CodingTracker.joshluca98
 
         public static void Update()
         {
+            Console.WriteLine("Update Record\n");
             GetAllRecords();
             int id = 0;
             using (var connection = new SqliteConnection(connectionString))
@@ -85,7 +87,6 @@ namespace CodingTracker.joshluca98
                 }
             }
 
-            Console.ReadLine();
             string date = Helper.GetDateInput();
             TimeSpan startTime = Helper.GetTime("Time started (HH:mm): ");
             TimeSpan endTime = Helper.GetTime("Time ended (HH:mm): ");
@@ -109,6 +110,7 @@ namespace CodingTracker.joshluca98
 
         public static void Delete()
         {
+            Console.WriteLine("Delete Record\n");
             GetAllRecords();
             int id = 0;
             using (var connection = new SqliteConnection(connectionString))

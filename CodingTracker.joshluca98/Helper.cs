@@ -25,6 +25,8 @@ namespace CodingTracker.joshluca98
             int finalInput;
             while (!int.TryParse(numberInput, out finalInput) || finalInput < 0)
             {
+                Console.Clear();
+                Database.GetAllRecords();
                 Console.WriteLine("(!) Invalid ID entered");
                 Console.Write($"{message}");
                 numberInput = Console.ReadLine();
