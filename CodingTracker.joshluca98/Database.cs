@@ -31,7 +31,7 @@ namespace CodingTracker.joshluca98
             using (var connection = new SqliteConnection(connectionString))
             {
                 var sql = "SELECT * FROM coding_log;";
-                var records = connection.Query<CodingRecord>(sql);
+                var records = connection.Query<CodingSession>(sql);
                 if (records.Count() == 0) { Console.WriteLine("No records found in the database."); }
                 else { Console.WriteLine("ID\tDate\t\tStart Time\tEnd Time\tDuration\n"); }
 

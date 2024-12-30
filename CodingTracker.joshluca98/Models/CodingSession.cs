@@ -1,6 +1,6 @@
 ﻿namespace CodingTracker.joshluca98.Models
 {
-    internal class CodingRecord
+    internal class CodingSession
     {
         public int Id { get; set; }
         public DateTime Date { get; set; }
