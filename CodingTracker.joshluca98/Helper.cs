@@ -25,7 +25,8 @@ namespace CodingTracker.joshluca98
             int finalInput;
             while (!int.TryParse(numberInput, out finalInput) || finalInput < 0)
             {
-                Console.WriteLine($"\n{message}\n");
+                Console.WriteLine("(!) Invalid ID entered");
+                Console.Write($"{message}");
                 numberInput = Console.ReadLine();
             }
             return finalInput;
@@ -36,8 +37,9 @@ namespace CodingTracker.joshluca98
             Console.Write(message);
             string timeInput = Console.ReadLine();
             TimeSpan timeOutput;
-            while (!TimeSpan.TryParse(timeInput, out timeOutput))
+            while (!TimeSpan.TryParseExact(timeInput, "hh\\:mm", null, out timeOutput))
             {
+                Console.WriteLine("(!) Invalid time entered");
                 Console.Write($"{message}");
                 timeInput = Console.ReadLine();
             }

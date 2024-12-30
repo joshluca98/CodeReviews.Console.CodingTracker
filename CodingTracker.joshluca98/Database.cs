@@ -1,4 +1,6 @@
 ﻿using CodingTracker.joshluca98.Models;
+using System.Configuration;
+using System.Collections.Specialized;
 using Dapper;
 using Microsoft.Data.Sqlite;
 using Spectre.Console;
@@ -7,8 +9,8 @@ namespace CodingTracker.joshluca98
 {
     public static class Database
     {
-        static string connectionString = $"Data Source=CodingTracker.db;";
-        
+        static string connectionString = ConfigurationManager.AppSettings.Get("connectionString");
+
         public static void CreateDatabaseTable()
         {
             using (var connection = new SqliteConnection(connectionString))
@@ -65,7 +67,25 @@ namespace CodingTracker.joshluca98
         public static void Update()
         {
             GetAllRecords();
-            int id = Helper.GetId("Enter ID of record to update: ");
+            int id = 0;
+            using (var connection = new SqliteConnection(connectionString))
+            {
+                int count = 0;
+                while (count < 1)
+                {
+                    id = Helper.GetId("Enter ID of record to update: ");
+                    string checkIdQuery = $"SELECT COUNT(*) FROM coding_log WHERE Id = {id};";
+                    count = connection.QuerySingle<int>(checkIdQuery);
+                    if (count < 1)
+                    {
+                        Console.Clear();
+                        GetAllRecords();
+                        Console.WriteLine($"(!) Enter an ID from the list above.");
+                    }
+                }
+            }
+
+            Console.ReadLine();
             string date = Helper.GetDateInput();
             TimeSpan startTime = Helper.GetTime("Time started (HH:mm): ");
             TimeSpan endTime = Helper.GetTime("Time ended (HH:mm): ");
@@ -73,25 +93,16 @@ namespace CodingTracker.joshluca98
 
             using (var connection = new SqliteConnection(connectionString))
             {
-                string checkIdQuery = $"SELECT COUNT(*) FROM coding_log WHERE Id = {id};";
-                int count = connection.QuerySingle<int>(checkIdQuery);
-                if (count > 0)
-                {
-                    string updateQuery = @$"
-                        UPDATE coding_log 
-                        SET Date = '{date}', 
-                            Start_Time = '{startTime.ToString()}',  
-                            End_Time = '{endTime.ToString()}',  
-                            Duration = '{duration.ToString()}' 
-                        WHERE Id = {id};";
+                string updateQuery = @$"
+                    UPDATE coding_log 
+                    SET Date = '{date}', 
+                        Start_Time = '{startTime.ToString()}',  
+                        End_Time = '{endTime.ToString()}',  
+                        Duration = '{duration.ToString()}' 
+                    WHERE Id = {id};";
 
-                    connection.Execute(updateQuery);
-                    Console.WriteLine($"\nRecord with ID {id} has been updated.");
-                }
-                else
-                {
-                    Console.WriteLine($"\nRecord with ID {id} was not found. No changes have been made.");
-                }
+                connection.Execute(updateQuery);
+                Console.WriteLine($"\nRecord with ID {id} has been updated.");
                 Console.ReadLine();
             }
         }
@@ -99,24 +110,32 @@ namespace CodingTracker.joshluca98
         public static void Delete()
         {
             GetAllRecords();
-            int id = Helper.GetId("Enter ID of record to delete: ");
+            int id = 0;
             using (var connection = new SqliteConnection(connectionString))
             {
-                string checkIdQuery = $"SELECT COUNT(*) FROM coding_log WHERE Id = {id};";
-                int count = connection.QuerySingle<int>(checkIdQuery);
-
-                if (count > 0)
+                int count = 0;
+                while (count < 1)
                 {
-                    string deleteQuery = $"DELETE from coding_log WHERE Id = '{id}';";
-                    connection.Execute(deleteQuery);
-                    Console.WriteLine($"\nRecord with ID {id} has been deleted.");
+                    id = Helper.GetId("Enter ID of record to delete: ");
+                    string checkIdQuery = $"SELECT COUNT(*) FROM coding_log WHERE Id = {id};";
+                    count = connection.QuerySingle<int>(checkIdQuery);
+                    if (count < 1)
+                    {
+                        Console.Clear();
+                        GetAllRecords();
+                        Console.WriteLine($"(!) Enter an ID from the list above.");
+                    }
                 }
-                else
-                {
-                    Console.WriteLine($"\nRecord with ID {id} was not found. No changes have been made.");
-                }
+            }
+            using (var connection = new SqliteConnection(connectionString))
+            {
+                string deleteQuery = $"DELETE from coding_log WHERE Id = '{id}';";
+                connection.Execute(deleteQuery);
+                Console.WriteLine($"\nRecord with ID {id} has been deleted.");
+                Console.WriteLine("Press ENTER to continue..");
                 Console.ReadLine();
             }
+               
         }
     }
 }
