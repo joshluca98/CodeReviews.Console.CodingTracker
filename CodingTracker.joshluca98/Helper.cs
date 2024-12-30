@@ -6,24 +6,22 @@ namespace CodingTracker.joshluca98
     {
         public static string GetDateInput()
         {
-            Console.WriteLine("\nEnter date (MM-dd-yyyy):\n");
+            Console.Write("\nEnter date (MM-dd-yyyy): ");
             string dateInput = Console.ReadLine();
-
-            while (!DateTime.TryParseExact(dateInput, "MM-dd-yyyy", new CultureInfo("en-US"), DateTimeStyles.None, out _))
+            DateTime dateOutput;
+            while (!DateTime.TryParseExact(dateInput, "MM-dd-yyyy", new CultureInfo("en-US"), DateTimeStyles.None, out dateOutput))
             {
-                if (dateInput == "0") return dateInput;
                 Console.Clear();
-                Console.WriteLine("\nPlease type a date (MM-dd-yyyy):\n");
+                Console.WriteLine("\nEnter date (MM-dd-yyyy): ");
                 dateInput = Console.ReadLine();
             }
-            return dateInput;
+            return dateOutput.ToString("MM-dd-yyyy");
         }
 
         public static int GetId(string message)
         {
             Console.Write(message);
             string numberInput = Console.ReadLine();
-
             int finalInput;
             while (!int.TryParse(numberInput, out finalInput) || finalInput < 0)
             {
@@ -33,18 +31,17 @@ namespace CodingTracker.joshluca98
             return finalInput;
         }
 
-        public static int GetTime(string message)
+        public static TimeSpan GetTime(string message)
         {
             Console.Write(message);
-            string numberInput = Console.ReadLine();
-
-            int finalInput;
-            while (!int.TryParse(numberInput, out finalInput) || finalInput.ToString().Length != 4)
+            string timeInput = Console.ReadLine();
+            TimeSpan timeOutput;
+            while (!TimeSpan.TryParse(timeInput, out timeOutput))
             {
                 Console.Write($"{message}");
-                numberInput = Console.ReadLine();
+                timeInput = Console.ReadLine();
             }
-            return finalInput;
+            return timeOutput;
         }
 
         public enum MenuAction
