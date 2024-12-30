@@ -1,6 +1,5 @@
-﻿using Spectre.Console;
-using System.Globalization;
-using CodingTracker.joshluca98;
+﻿using CodingTracker.joshluca98;
+using Spectre.Console;
 
 Database.CreateDatabaseTable();
 UserMenu();

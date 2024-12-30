@@ -1,9 +1,8 @@
 ﻿using CodingTracker.joshluca98.Models;
-using System.Configuration;
-using System.Collections.Specialized;
 using Dapper;
 using Microsoft.Data.Sqlite;
 using Spectre.Console;
+using System.Configuration;
 
 namespace CodingTracker.joshluca98
 {
@@ -29,19 +28,18 @@ namespace CodingTracker.joshluca98
 
         public static void GetAllRecords()
         {
-            
+
             using (var connection = new SqliteConnection(connectionString))
             {
                 var sql = "SELECT * FROM coding_log;";
                 var records = connection.Query<CodingSession>(sql);
                 if (records.Count() == 0) { Console.WriteLine("No records found in the database."); }
-                else 
+                else
                 {
-                    //Console.WriteLine("ID\tDate\t\tStart Time\tEnd Time\tDuration\n"); 
                     AnsiConsole.Markup("[underline default]ID\tDate\t\tStart Time\tEnd Time\tDuration[/]\n\n");
                 }
 
-                
+
                 foreach (var record in records)
                 {
                     AnsiConsole.Markup($"[black on white]{record.Id}\t{record.Date.ToString("MM-dd-yyyy")}\t{record.Start_Time}\t{record.End_Time}\t{record.Duration}[/]\n");
@@ -64,7 +62,7 @@ namespace CodingTracker.joshluca98
                 string insertQuery = @$"
                     INSERT INTO coding_log(Date, Start_Time, End_Time, Duration)
                     VALUES ('{date}', '{startTime.ToString()}', '{endTime.ToString()}', '{duration.ToString()}');";
-                  
+
                 connection.Execute(insertQuery);
                 Console.WriteLine($"\nRecord has been created.");
                 Console.ReadLine();
@@ -101,7 +99,7 @@ namespace CodingTracker.joshluca98
                 AnsiConsole.Markup("[green]Press ENTER to continue[/] ");
                 Console.ReadLine();
             }
-               
+
         }
 
         public static void Update()
@@ -122,7 +120,7 @@ namespace CodingTracker.joshluca98
                         Console.Clear();
                         AnsiConsole.Markup("[red](!) Enter an ID from the list above.[/]\n\n ");
                         GetAllRecords();
-                        
+
                     }
                 }
             }
