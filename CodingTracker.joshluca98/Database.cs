@@ -29,17 +29,22 @@ namespace CodingTracker.joshluca98
 
         public static void GetAllRecords()
         {
-            Console.WriteLine("Records List\n");
+            
             using (var connection = new SqliteConnection(connectionString))
             {
                 var sql = "SELECT * FROM coding_log;";
                 var records = connection.Query<CodingSession>(sql);
                 if (records.Count() == 0) { Console.WriteLine("No records found in the database."); }
-                else { Console.WriteLine("ID\tDate\t\tStart Time\tEnd Time\tDuration\n"); }
+                else 
+                {
+                    //Console.WriteLine("ID\tDate\t\tStart Time\tEnd Time\tDuration\n"); 
+                    AnsiConsole.Markup("[underline default]ID\tDate\t\tStart Time\tEnd Time\tDuration[/]\n\n");
+                }
 
+                
                 foreach (var record in records)
                 {
-                    Console.WriteLine($"{record.Id}\t{record.Date.ToString("MM-dd-yyyy")}\t{record.Start_Time}\t{record.End_Time}\t{record.Duration}");
+                    AnsiConsole.Markup($"[black on white]{record.Id}\t{record.Date.ToString("MM-dd-yyyy")}\t{record.Start_Time}\t{record.End_Time}\t{record.Duration}[/]\n");
                 }
                 Console.WriteLine();
             }
@@ -47,7 +52,8 @@ namespace CodingTracker.joshluca98
 
         public static void Insert()
         {
-            Console.WriteLine("Insert Record");
+            AnsiConsole.Markup("[default on blue]Insert Record[/]\n\n");
+
             string date = Helper.GetDateInput();
             TimeSpan startTime = Helper.GetTime("Time started (HH:mm): ");
             TimeSpan endTime = Helper.GetTime("Time ended (HH:mm): ");
@@ -65,9 +71,42 @@ namespace CodingTracker.joshluca98
             }
         }
 
+        public static void Delete()
+        {
+            AnsiConsole.Markup("[default on blue]Delete Record[/]\n\n");
+
+            GetAllRecords();
+            int id = 0;
+            using (var connection = new SqliteConnection(connectionString))
+            {
+                int count = 0;
+                while (count < 1)
+                {
+                    id = Helper.GetId("Enter ID of record to delete: ");
+                    string checkIdQuery = $"SELECT COUNT(*) FROM coding_log WHERE Id = {id};";
+                    count = connection.QuerySingle<int>(checkIdQuery);
+                    if (count < 1)
+                    {
+                        Console.Clear();
+                        AnsiConsole.Markup("[red](!) Enter an ID from the list above.[/]\n\n");
+                        GetAllRecords();
+                    }
+                }
+            }
+            using (var connection = new SqliteConnection(connectionString))
+            {
+                string deleteQuery = $"DELETE from coding_log WHERE Id = '{id}';";
+                connection.Execute(deleteQuery);
+                Console.WriteLine($"\nRecord with ID {id} has been deleted.");
+                AnsiConsole.Markup("[green]Press ENTER to continue[/] ");
+                Console.ReadLine();
+            }
+               
+        }
+
         public static void Update()
         {
-            Console.WriteLine("Update Record\n");
+            AnsiConsole.Markup("[default on blue]Update Record[/]\n\n");
             GetAllRecords();
             int id = 0;
             using (var connection = new SqliteConnection(connectionString))
@@ -81,8 +120,9 @@ namespace CodingTracker.joshluca98
                     if (count < 1)
                     {
                         Console.Clear();
+                        AnsiConsole.Markup("[red](!) Enter an ID from the list above.[/]\n\n ");
                         GetAllRecords();
-                        Console.WriteLine($"(!) Enter an ID from the list above.");
+                        
                     }
                 }
             }
@@ -104,40 +144,9 @@ namespace CodingTracker.joshluca98
 
                 connection.Execute(updateQuery);
                 Console.WriteLine($"\nRecord with ID {id} has been updated.");
+                AnsiConsole.Markup("[green]Press ENTER to continue[/] ");
                 Console.ReadLine();
             }
-        }
-
-        public static void Delete()
-        {
-            Console.WriteLine("Delete Record\n");
-            GetAllRecords();
-            int id = 0;
-            using (var connection = new SqliteConnection(connectionString))
-            {
-                int count = 0;
-                while (count < 1)
-                {
-                    id = Helper.GetId("Enter ID of record to delete: ");
-                    string checkIdQuery = $"SELECT COUNT(*) FROM coding_log WHERE Id = {id};";
-                    count = connection.QuerySingle<int>(checkIdQuery);
-                    if (count < 1)
-                    {
-                        Console.Clear();
-                        GetAllRecords();
-                        Console.WriteLine($"(!) Enter an ID from the list above.");
-                    }
-                }
-            }
-            using (var connection = new SqliteConnection(connectionString))
-            {
-                string deleteQuery = $"DELETE from coding_log WHERE Id = '{id}';";
-                connection.Execute(deleteQuery);
-                Console.WriteLine($"\nRecord with ID {id} has been deleted.");
-                Console.WriteLine("Press ENTER to continue..");
-                Console.ReadLine();
-            }
-               
         }
     }
 }

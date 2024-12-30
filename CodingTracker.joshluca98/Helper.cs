@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using Spectre.Console;
+using System.Globalization;
 
 namespace CodingTracker.joshluca98
 {
@@ -6,7 +7,7 @@ namespace CodingTracker.joshluca98
     {
         public static string GetDateInput()
         {
-            Console.Write("\nEnter date (MM-dd-yyyy): ");
+            Console.Write("Enter date (MM-dd-yyyy): ");
             string dateInput = Console.ReadLine();
             DateTime dateOutput;
             while (!DateTime.TryParseExact(dateInput, "MM-dd-yyyy", new CultureInfo("en-US"), DateTimeStyles.None, out dateOutput))
@@ -26,8 +27,8 @@ namespace CodingTracker.joshluca98
             while (!int.TryParse(numberInput, out finalInput) || finalInput < 0)
             {
                 Console.Clear();
+                AnsiConsole.Markup("[red]Invalid ID entered![/]\n\n");
                 Database.GetAllRecords();
-                Console.WriteLine("(!) Invalid ID entered");
                 Console.Write($"{message}");
                 numberInput = Console.ReadLine();
             }
@@ -41,7 +42,7 @@ namespace CodingTracker.joshluca98
             TimeSpan timeOutput;
             while (!TimeSpan.TryParseExact(timeInput, "hh\\:mm", null, out timeOutput))
             {
-                Console.WriteLine("(!) Invalid time entered");
+                AnsiConsole.Markup("\n[red]Invalid time entered![/]\n\n");
                 Console.Write($"{message}");
                 timeInput = Console.ReadLine();
             }

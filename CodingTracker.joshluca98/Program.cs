@@ -19,8 +19,9 @@ void UserMenu()
         {
             case Helper.MenuAction.ViewRecords:
                 Console.Clear();
+                AnsiConsole.Markup("[default on blue]Records List[/]\n\n");
                 Database.GetAllRecords();
-                Console.WriteLine("Press ENTER to continue..");
+                AnsiConsole.Markup("[green]Press ENTER to continue[/] ");
                 Console.ReadLine();
                 break;
             case Helper.MenuAction.InsertRecord:
