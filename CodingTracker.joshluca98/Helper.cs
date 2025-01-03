@@ -12,8 +12,8 @@ namespace CodingTracker.joshluca98
             DateTime dateOutput;
             while (!DateTime.TryParseExact(dateInput, "MM-dd-yyyy", new CultureInfo("en-US"), DateTimeStyles.None, out dateOutput))
             {
-                Console.Clear();
-                Console.WriteLine("\nEnter date (MM-dd-yyyy): ");
+                AnsiConsole.Markup("\n[red]Invalid date entered![/]\n");
+                Console.Write("\nEnter a VALID date (MM-dd-yyyy): ");
                 dateInput = Console.ReadLine();
             }
             return dateOutput.ToString("MM-dd-yyyy");
@@ -43,7 +43,7 @@ namespace CodingTracker.joshluca98
             while (!TimeSpan.TryParseExact(timeInput, "hh\\:mm", null, out timeOutput))
             {
                 AnsiConsole.Markup("\n[red]Invalid time entered![/]\n\n");
-                Console.Write($"{message}");
+                Console.Write(message);
                 timeInput = Console.ReadLine();
             }
             return timeOutput;

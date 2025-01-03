@@ -2,13 +2,12 @@
 using Dapper;
 using Microsoft.Data.Sqlite;
 using Spectre.Console;
-using System.Configuration;
 
 namespace CodingTracker.joshluca98
 {
     public static class Database
     {
-        static string connectionString = ConfigurationManager.AppSettings.Get("connectionString");
+        static string connectionString = System.Configuration.ConfigurationManager.AppSettings.Get("connectionString");
 
         public static void CreateDatabaseTable()
         {
@@ -55,7 +54,19 @@ namespace CodingTracker.joshluca98
             string date = Helper.GetDateInput();
             TimeSpan startTime = Helper.GetTime("Time started (HH:mm): ");
             TimeSpan endTime = Helper.GetTime("Time ended (HH:mm): ");
-            TimeSpan duration = endTime - startTime;
+            TimeSpan duration;
+            if (startTime > endTime)
+            {
+                AnsiConsole.Markup($"\n[red]The end time entered falls on the next day. [green]Press ENTER to proceed[/] or type 0 to abort! [/]");
+                bool proceed = string.IsNullOrEmpty(Console.ReadLine()) ? true : false;
+                if (proceed) duration = (TimeSpan.FromHours(24) - startTime) + endTime;
+                else return;
+            }
+            else
+            {
+                duration = endTime - startTime;
+            }
+            
 
             using (var connection = new SqliteConnection(connectionString))
             {
@@ -64,7 +75,7 @@ namespace CodingTracker.joshluca98
                     VALUES ('{date}', '{startTime.ToString()}', '{endTime.ToString()}', '{duration.ToString()}');";
 
                 connection.Execute(insertQuery);
-                Console.WriteLine($"\nRecord has been created.");
+                Console.WriteLine($"\nRecord has been created. Press ENTER to return to menu");
                 Console.ReadLine();
             }
         }
